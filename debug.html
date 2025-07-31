@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Pinner - Debug Page</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f7f7f8;
+        }
+        
+        .debug-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .debug-button {
+            background: #10a37f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        .debug-button:hover {
+            background: #0d8a6f;
+        }
+        
+        .debug-output {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .test-messages {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .test-message {
+            margin: 20px 0;
+            padding: 16px;
+            border-radius: 8px;
+            position: relative;
+            border-left: 4px solid #10a37f;
+            background: #f9f9f9;
+        }
+        
+        .test-message.user {
+            border-left-color: #10a37f;
+            background: #f0f9f6;
+        }
+        
+        .test-message.assistant {
+            border-left-color: #666;
+            background: #f5f5f5;
+        }
+        
+        .author {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #10a37f;
+        }
+        
+        .content {
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 ChatGPT Pinner - Debug Page</h1>
+    
+    <div class="debug-panel">
+        <h2>Debug Controls</h2>
+        <p>Use these buttons to test and debug the extension functionality:</p>
+        
+        <button class="debug-button" onclick="forceAddPinButtons()">Force Add Pin Buttons</button>
+        <button class="debug-button" onclick="showAllButtons()">Show All Buttons</button>
+        <button class="debug-button" onclick="hideAllButtons()">Hide All Buttons</button>
+        <button class="debug-button" onclick="getStatus()">Get Status</button>
+        <button class="debug-button" onclick="clearOutput()">Clear Output</button>
+        
+        <div class="debug-output" id="debugOutput">Debug output will appear here...</div>
+    </div>
+
+    <div class="test-messages">
+        <h2>Test Messages</h2>
+        <p>These messages simulate ChatGPT's DOM structure. Hover over them to see if pin buttons appear:</p>
+        
+        <div data-testid="conversation-turn-2" class="test-message user">
+            <div data-message-author-role="user" class="author">User</div>
+            <div class="content">
+                This is a test user message. Hover over this message to see if the pin button appears.
+            </div>
+        </div>
+        
+        <div data-testid="conversation-turn-3" class="test-message assistant">
+            <div data-message-author-role="assistant" class="author">Assistant</div>
+            <div class="content">
+                This is a test assistant message. The pin button should appear when you hover over this message. If you don't see it, there might be an issue with the extension.
+            </div>
+        </div>
+        
+        <div data-testid="conversation-turn-4" class="test-message user">
+            <div data-message-author-role="user" class="author">User</div>
+            <div class="content">
+                Another test message to check if multiple pin buttons work correctly.
+            </div>
+        </div>
+    </div>
+
+    <div class="debug-panel">
+        <h2>Instructions</h2>
+        <ol>
+            <li>Make sure the extension is installed and enabled</li>
+            <li>Load this page in Chrome</li>
+            <li>Click "Force Add Pin Buttons" to manually trigger the extension</li>
+            <li>Hover over the test messages to see if pin buttons appear</li>
+            <li>Use "Show All Buttons" to force all buttons to be visible</li>
+            <li>Check the debug output for any error messages</li>
+        </ol>
+    </div>
+
+    <script>
+        function log(message) {
+            const output = document.getElementById('debugOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function forceAddPinButtons() {
+            log('Attempting to force add pin buttons...');
+            if (window.chatgptpinner) {
+                window.chatgptpinner.forceAddPinButtons();
+                log('Pin buttons added successfully');
+            } else {
+                log('ERROR: Extension not loaded or chatgptpinner not available');
+            }
+        }
+
+        function showAllButtons() {
+            log('Showing all pin buttons...');
+            if (window.chatgptpinner) {
+                window.chatgptpinner.showAllButtons();
+                log('All buttons should now be visible');
+            } else {
+                log('ERROR: Extension not loaded');
+            }
+        }
+
+        function hideAllButtons() {
+            log('Hiding all pin buttons...');
+            if (window.chatgptpinner) {
+                window.chatgptpinner.hideAllButtons();
+                log('All buttons should now be hidden');
+            } else {
+                log('ERROR: Extension not loaded');
+            }
+        }
+
+        function getStatus() {
+            log('Getting extension status...');
+            if (window.chatgptpinner) {
+                const status = window.chatgptpinner.getStatus();
+                log(`Status: ${JSON.stringify(status, null, 2)}`);
+            } else {
+                log('ERROR: Extension not loaded');
+            }
+        }
+
+        function clearOutput() {
+            document.getElementById('debugOutput').textContent = 'Debug output cleared...\n';
+        }
+
+        // Auto-check for extension
+        setTimeout(() => {
+            if (window.chatgptpinner) {
+                log('✅ Extension detected and loaded successfully');
+            } else {
+                log('❌ Extension not detected. Make sure it\'s installed and enabled.');
+            }
+        }, 2000);
+
+        // Log page load
+        log('Debug page loaded. Extension status will be checked in 2 seconds...');
+    </script>
+</body>
+</html> 

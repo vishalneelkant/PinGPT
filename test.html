@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Pinner - Test Page</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f7f7f8;
+        }
+        
+        .conversation {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .message {
+            margin: 20px 0;
+            padding: 16px;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .user-message {
+            background: #f7f7f8;
+            border-left: 4px solid #10a37f;
+        }
+        
+        .assistant-message {
+            background: #f9f9f9;
+            border-left: 4px solid #666;
+        }
+        
+        .author {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #10a37f;
+        }
+        
+        .content {
+            line-height: 1.6;
+        }
+        
+        .test-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .test-info h2 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        
+        .test-steps {
+            background: #f3e5f5;
+            border: 1px solid #9c27b0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .test-steps h3 {
+            margin-top: 0;
+            color: #7b1fa2;
+        }
+        
+        .test-steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .test-steps li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 ChatGPT Pinner Extension Test Page</h1>
+    
+    <div class="test-info">
+        <h2>Test Instructions</h2>
+        <p>This page simulates ChatGPT's DOM structure to test the extension functionality. Follow the steps below to validate the extension.</p>
+    </div>
+    
+    <div class="test-steps">
+        <h3>Testing Steps:</h3>
+        <ol>
+            <li>Install the extension using the instructions in <code>install.md</code></li>
+            <li>Load this test page in Chrome</li>
+            <li>Hover over the messages below - you should see pin buttons appear</li>
+            <li>Click the pin buttons to pin/unpin messages</li>
+            <li>Click the extension icon to view pinned messages</li>
+            <li>Test the copy, open, and remove functionality in the popup</li>
+        </ol>
+    </div>
+
+    <div class="conversation">
+        <div data-testid="conversation-turn-2" class="message user-message">
+            <div data-message-author-role="user" class="author">User</div>
+            <div class="content">
+                Can you help me create a Chrome extension that can pin important messages in ChatGPT? I want to be able to save important conversations for later reference.
+            </div>
+        </div>
+        
+        <div data-testid="conversation-turn-3" class="message assistant-message">
+            <div data-message-author-role="assistant" class="author">Assistant</div>
+            <div class="content">
+                I'd be happy to help you create a Chrome extension for pinning ChatGPT messages! This is a great idea for managing important conversations. Here's how we can approach this:
+
+1. **Content Script**: We'll need a content script that injects pin buttons into ChatGPT messages
+2. **Popup Interface**: A beautiful UI to display and manage pinned messages
+3. **Storage**: Chrome's storage API to persist pinned messages
+4. **Background Script**: Handle communication between components
+
+The extension will add pin buttons that appear on hover, and you'll be able to view all pinned messages in a popup with options to copy, open, or remove them.
+            </div>
+        </div>
+        
+        <div data-testid="conversation-turn-2" class="message user-message">
+            <div data-message-author-role="user" class="author">User</div>
+            <div class="content">
+                That sounds perfect! Can you show me the code for the content script that will inject the pin buttons?
+            </div>
+        </div>
+        
+        <div data-testid="conversation-turn-3" class="message assistant-message">
+            <div data-message-author-role="assistant" class="author">Assistant</div>
+            <div class="content">
+                Absolutely! Here's the content script code that will inject pin buttons into ChatGPT messages:
+
+```javascript
+// Content script for ChatGPT Pinner extension
+(function() {
+    'use strict';
+    
+    const PIN_BUTTON_CLASS = 'chatgpt-pinner-btn';
+    const PINNED_CLASS = 'chatgpt-pinner-pinned';
+    const PIN_ICON = '📌';
+    const UNPIN_ICON = '📍';
+    
+    // Store pinned messages
+    let pinnedMessages = [];
+    
+    // Initialize the extension
+    function init() {
+        loadPinnedMessages();
+        observeChatChanges();
+        addStyles();
+    }
+    
+    // Add pin buttons to messages
+    function addPinButtons() {
+        const messages = document.querySelectorAll('[data-message-author-role]');
+        
+        messages.forEach((messageElement) => {
+            const container = messageElement.closest('[data-testid="conversation-turn-2"]') || 
+                            messageElement.closest('[data-testid="conversation-turn-3"]') ||
+                            messageElement.parentElement;
+            
+            if (!container || container.querySelector(`.${PIN_BUTTON_CLASS}`)) {
+                return;
+            }
+            
+            // Create and add pin button
+            const pinButton = createPinButton(messageElement);
+            container.appendChild(pinButton);
+        });
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+```
+
+This script will detect ChatGPT messages and add pin buttons that appear on hover. The buttons will be positioned in the top-right corner of each message.
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-info">
+        <h2>Expected Behavior</h2>
+        <ul>
+            <li>Pin buttons (📌) should appear when hovering over messages</li>
+            <li>Clicking a pin button should pin the message and change the icon to 📍</li>
+            <li>Clicking a pinned button should unpin the message</li>
+            <li>Toast notifications should appear when pinning/unpinning</li>
+            <li>The extension popup should show all pinned messages</li>
+        </ul>
+    </div>
+    
+    <script>
+        // Simulate some extension functionality for testing
+        console.log('ChatGPT Pinner Test Page Loaded');
+        console.log('This page simulates ChatGPT DOM structure for extension testing');
+    </script>
+</body>
+</html> 

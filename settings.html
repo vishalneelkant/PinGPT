@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Pinner - Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 450px;
+            min-height: 600px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+        }
+
+        body.minimal-ui {
+            background: #f8f9fa;
+        }
+
+        body.dark-mode.minimal-ui {
+            background: #1a1a1a;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .header {
+            background: rgba(26, 26, 46, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.minimal-ui .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        body.dark-mode.minimal-ui .header {
+            background: #2d2d2d;
+            border-bottom: 1px solid #404040;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #10a37f;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .header h1 {
+            color: #4ade80;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .header p {
+            color: #a0a0a0;
+        }
+
+        .content {
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .settings-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        body.dark-mode .settings-section {
+            background: rgba(26, 26, 46, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        body.minimal-ui .settings-section {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode.minimal-ui .settings-section {
+            background: #2d2d2d;
+            border: 1px solid #404040;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .settings-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #10a37f;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .settings-section h3 {
+            color: #4ade80;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .setting-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .setting-label {
+            color: #e0e0e0;
+        }
+
+        .setting-description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .setting-description {
+            color: #a0a0a0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #10a37f;
+        }
+
+        body.dark-mode .toggle-switch.active {
+            background: #4ade80;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+
+        .select-dropdown {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .select-dropdown {
+            background: #2d2d2d;
+            border-color: #404040;
+            color: #e0e0e0;
+        }
+
+        .select-dropdown:focus {
+            outline: none;
+            border-color: #10a37f;
+            box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+        }
+
+        body.dark-mode .select-dropdown:focus {
+            border-color: #4ade80;
+            box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2);
+        }
+
+        .footer {
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .footer {
+            background: rgba(26, 26, 46, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.minimal-ui .footer {
+            background: #ffffff;
+            border-top: 1px solid #e9ecef;
+        }
+
+        body.dark-mode.minimal-ui .footer {
+            background: #2d2d2d;
+            border-top: 1px solid #404040;
+        }
+
+        .reset-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        body.dark-mode .reset-btn {
+            background: #ef4444;
+        }
+
+        .reset-btn:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        body.dark-mode .reset-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Scrollbar styling */
+        .content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        body.dark-mode .content::-webkit-scrollbar-track {
+            background: rgba(224, 224, 224, 0.1);
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        body.dark-mode .content::-webkit-scrollbar-thumb {
+            background: rgba(224, 224, 224, 0.3);
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        body.dark-mode .content::-webkit-scrollbar-thumb:hover {
+            background: rgba(224, 224, 224, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚙️ Settings</h1>
+        <p>Customize your ChatGPT Pinner experience</p>
+    </div>
+
+    <div class="content" id="content">
+        <div class="settings-section">
+            <h3>🎨 Appearance</h3>
+            
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">
+                        <span>🌙</span>
+                        <span>Dark Mode</span>
+                    </div>
+                    <div class="setting-description">Switch to dark theme for better visibility in low light</div>
+                </div>
+                <div class="toggle-switch" id="darkModeToggle"></div>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">
+                        <span>⚡</span>
+                        <span>Minimal UI</span>
+                    </div>
+                    <div class="setting-description">Use a cleaner, more minimal interface design</div>
+                </div>
+                <div class="toggle-switch" id="minimalUIToggle"></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>🔧 Behavior</h3>
+            
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">
+                        <span>🔔</span>
+                        <span>Toast Notifications</span>
+                    </div>
+                    <div class="setting-description">Show notifications when pinning/unpinning messages</div>
+                </div>
+                <div class="toggle-switch" id="toastToggle"></div>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">
+                        <span>🔄</span>
+                        <span>Auto-refresh</span>
+                    </div>
+                    <div class="setting-description">Automatically refresh pinned messages when opening popup</div>
+                </div>
+                <div class="toggle-switch" id="autoRefreshToggle"></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>📱 Display</h3>
+            
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">
+                        <span>📏</span>
+                        <span>Message Preview Length</span>
+                    </div>
+                    <div class="setting-description">Number of characters to show in message previews</div>
+                </div>
+                <select class="select-dropdown" id="previewLengthSelect">
+                    <option value="50">50 characters</option>
+                    <option value="100" selected>100 characters</option>
+                    <option value="150">150 characters</option>
+                    <option value="200">200 characters</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">
+                        <span>📅</span>
+                        <span>Date Format</span>
+                    </div>
+                    <div class="setting-description">How to display timestamps for pinned messages</div>
+                </div>
+                <select class="select-dropdown" id="dateFormatSelect">
+                    <option value="relative" selected>Relative (2h ago)</option>
+                    <option value="absolute">Absolute (Dec 15, 2023)</option>
+                    <option value="compact">Compact (12/15/23)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>🗂️ Data</h3>
+            
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">
+                        <span>💾</span>
+                        <span>Export Pinned Messages</span>
+                    </div>
+                    <div class="setting-description">Download all pinned messages as JSON file</div>
+                </div>
+                <button class="action-btn" id="exportBtn">Export</button>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">
+                        <span>🗑️</span>
+                        <span>Clear All Data</span>
+                    </div>
+                    <div class="setting-description">Remove all pinned messages and reset settings</div>
+                </div>
+                <button class="reset-btn" id="clearDataBtn">Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <button class="reset-btn" id="resetSettingsBtn">Reset to Defaults</button>
+    </div>
+
+    <script src="settings.js"></script>
+</body>
+</html> 
