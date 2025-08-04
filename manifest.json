@@ -3,7 +3,11 @@
   "name": "ChatGPT Pinner",
   "description": "Pin important ChatGPT messages for later reference.",
   "version": "1.0",
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -15,7 +19,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://chatgpt.com/*"],
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
       "js": ["content.js"]
     }
   ],

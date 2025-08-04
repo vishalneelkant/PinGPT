@@ -3,7 +3,7 @@
     'use strict';
 
     // Configuration
-    const DEBUG_MODE = true;
+    const DEBUG_MODE = false;
     const PIN_BUTTON_CLASS = 'chatgpt-pinner-button';
     const PINNED_CLASS = 'pinned';
     const PIN_ICON = '📌';
@@ -118,7 +118,7 @@
                         storageMethod = 'localStorage';
                         saveToLocalStorage();
                     } else {
-                        if (DEBUG_MODE) console.log('ChatGPT Pinner: Saved', pinnedMessages.length, 'pinned messages to Chrome storage');
+                        if (DEBUG_MODE) console.log('ChatGPT Pinner: Saved', pinnedMessages, 'pinned messages to Chrome storage');
                     }
                 });
             } else {
@@ -136,7 +136,7 @@
     function saveToLocalStorage() {
         try {
             localStorage.setItem('chatgptPinner_pinnedMessages', JSON.stringify(pinnedMessages));
-            if (DEBUG_MODE) console.log('ChatGPT Pinner: Saved', pinnedMessages.length, 'pinned messages to localStorage');
+            if (DEBUG_MODE) console.log('ChatGPT Pinner: Saved', pinnedMessages);
         } catch (error) {
             console.error('ChatGPT Pinner: Error saving to localStorage:', error);
         }
@@ -305,6 +305,27 @@
         }
     }
 
+    function extractMessageId(messageElement) {
+        try {
+            if (!messageElement) return 'MessageId not available';
+    
+            // Find the closest element with a data-message-id attribute
+            const elWithId = messageElement.closest('[data-message-id]') || messageElement.querySelector('[data-message-id]');
+            
+            if (elWithId) {
+                return elWithId.getAttribute('data-message-id');
+            }
+    
+            return 'MessageId not available';
+        } catch (error) {
+            if (typeof DEBUG_MODE !== 'undefined' && DEBUG_MODE) {
+                console.error('ChatGPT Pinner: Error extracting message ID:', error);
+            }
+            return 'MessageId not available';
+        }
+    }
+    
+
     // Extract message author
     function extractMessageAuthor(messageElement) {
         try {
@@ -411,6 +432,7 @@
             const existingIndex = pinnedMessages.findIndex(msg => msg.id === messageId);
             
             let button = document.querySelector(`.${PIN_BUTTON_CLASS}[data-message-id="${messageId}"]`);
+            //console.log("Message Id of button ", button);
             if (!button) {
                 if (DEBUG_MODE) console.error('ChatGPT Pinner: Button not found for message:', messageId);
                 showToast('Error: Button not found. Please try again.');
@@ -562,14 +584,16 @@
             const author = extractMessageAuthor(messageElement);
             const safeContent = content.replace(/[^\x00-\x7F]/g, '').replace(/[^a-zA-Z0-9\s\-_]/g, '').substring(0, 50).trim();
             const safeAuthor = author.replace(/[^\x00-\x7F]/g, '').replace(/[^a-zA-Z0-9\s\-_]/g, '').trim();
-            const idString = `${safeAuthor}-${safeContent}`;
-            let encodedId;
-            try { 
-                encodedId = btoa(idString); 
-            } catch (e) { 
-                encodedId = simpleHash(idString); 
-            }
-            return encodedId.replace(/[^a-zA-Z0-9]/g, '');
+            const idString = extractMessageId(messageElement);
+            //console.log("message Id ", idString);
+            return idString;
+            // let encodedId;
+            // try { 
+            //     encodedId = btoa(idString); 
+            // } catch (e) { 
+            //     encodedId = simpleHash(idString); 
+            // }
+            // return encodedId.replace(/[^a-zA-Z0-9]/g, '');
         } catch (error) {
             if (DEBUG_MODE) console.error('ChatGPT Pinner: Error generating message ID:', error);
             return `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -653,6 +677,7 @@
     } catch (error) {
         console.error('ChatGPT Pinner: Error setting up message listener:', error);
     }
+    
 
     // Debug functions
     window.chatgptPinnerDebug = {

@@ -244,27 +244,67 @@ document.addEventListener('DOMContentLoaded', function() {
                         chrome.storage.local.get(['pinnedMessages'], function(result) {
                             const messages = result.pinnedMessages || [];
                             const message = messages.find(m => m.id === messageId);
-                            
+                    
                             if (message && message.url) {
-                                chrome.tabs.create({ url: message.url });
+                                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                                    const currentTab = tabs[0];
+                                    chrome.tabs.update(currentTab.id, { url: message.url });
+                    
+                                    setTimeout(() => {
+                                        chrome.scripting.executeScript({
+                                            target: { tabId: currentTab.id },
+                                            func: (msgId) => {
+                                                // console.log("MSG  ", msgId);
+
+                                                const highlightAndScroll = (el) => {
+                                                    // console.log("el ", el);
+                                                    el.scrollIntoView({ behavior: "smooth", block: "start" });
+                                                    el.style.background = "#fff7b2";
+                                                    setTimeout(() => el.style.background = "", 1000);
+                                                };
+                                                let attempts = 0;
+                                                const maxAttempts = 20;
+
+                                                const tryFind = () => {
+                                                    const el = document.querySelector(`[data-message-id="${msgId}"]`);
+                                                    if (el) {
+                                                        highlightAndScroll(el);
+                                                    } else {
+                                                        // console.log("failed el, retrying...", attempts);
+                                                        attempts++;
+                                                        if (attempts < maxAttempts) {
+                                                            setTimeout(tryFind, 500);  // try again after 500ms
+                                                        } else {
+                                                            console.warn("Element not found after max retries");
+                                                        }
+                                                    }
+                                                };
+
+                                                tryFind();
+                                            },
+                                            args: [message.id]
+                                        });
+                                    }, 1000); // wait 10 seconds before scrolling
+                                });
                             }
                         });
                     } else {
-                        // Fallback to localStorage
+                        // fallback for non-Chrome context
                         const stored = localStorage.getItem('chatgptPinner_pinnedMessages');
                         const messages = stored ? JSON.parse(stored) : [];
                         const message = messages.find(m => m.id === messageId);
-                        
+                    
                         if (message && message.url) {
-                            window.open(message.url, '_blank');
+                            window.location.href = message.url;
                         }
-                    }
+                    }                    
                 } catch (error) {
                     console.error('ChatGPT Pinner: Error opening message:', error);
                 }
             });
-        });
-
+        });               
+        
+        
         // Delete buttons
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', function() {
