@@ -1,0 +1,48 @@
+Privacy Policy for ChatGPT Pinner
+Last updated: August 5, 2025
+
+1. Introduction
+ChatGPT Pinner is a Chrome extension that allows users to pin important ChatGPT messages for later reference. We value your privacy and are committed to protecting your data.
+
+2. Information We Collect
+We do NOT collect, store, or transmit any personal or sensitive user data.
+
+The extension runs locally in your browser and does not send any information to external servers.
+
+3. How We Use Information
+All data (e.g., pinned messages) is stored locally on your device using Chrome’s storage API. This data is:
+
+Only accessible to you.
+
+Not shared with any third parties.
+
+Not used for analytics or advertising.
+
+4. Permissions Explanation
+The extension uses the following permissions strictly for core functionality:
+
+storage: Save pinned messages locally.
+
+activeTab, scripting, tabs: Enable interaction with the active ChatGPT tab to identify and pin messages.
+
+host_permissions: Limited to chat.openai.com and chatgpt.com only.
+
+We do not use these permissions to track your activity.
+
+5. Data Sharing and Third Parties
+We do not share any data with third-party services or partners. Your usage of the extension is entirely private.
+
+6. Security
+Your pinned data is stored using Chrome’s secure local storage. Since no data is transmitted externally, the risk of unauthorized access is minimal.
+
+7. Children’s Privacy
+This extension does not target children under the age of 13, and we do not knowingly collect any personal information from minors.
+
+8. Changes to This Policy
+We may update this privacy policy if the extension adds new features. All updates will be posted here with a revised “Last updated” date.
+
+9. Contact Us
+If you have any questions about this privacy policy or the extension, please contact us at:
+📧 [YourEmail@example.com]
+
+Let me know if you’d like a Terms of Service or if you plan to monetize this — I can help you include relevant legal clauses.
